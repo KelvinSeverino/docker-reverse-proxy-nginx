@@ -1,0 +1,58 @@
+#Versao do arquivo docker-compose
+version: "3.8"
+
+#Servicos
+services:
+  #Nome de indentificacao do servico, pode colocar outro se necessario
+  reverse:  
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx/docker 
+    image: reverse/nginx
+    container_name: reverse
+    #hostname: reverse  
+    ports:
+      - 80:80
+      - 443:443  
+    #volumes:
+      #- ./nginx:/etc/nginx
+      #- ./certificates_ssl:/etc/ssl/private
+    depends_on:
+      - app74
+      - app81
+    stdin_open: true  # docker run -i
+    tty: true         # docker run -t
+
+  app74: 
+    build:
+      dockerfile: Dockerfile
+      context: ./php74/docker 
+    #Imagem de origem
+    image: kelvinsev/webserver-php74:1.0
+    #Nome do container
+    container_name: webserver-php74
+    #Caminho da pasta local para armazenar os dados (./ seria o caminho atual do arquivo docker-compose)
+    volumes:
+      - ./php74:/var/www/html/php74
+    #Porta de Comunicacao Local > Container
+    ports:
+      - 8074:80
+    stdin_open: true  # docker run -i
+    tty: true         # docker run -t
+
+  app81: 
+    build:
+      dockerfile: Dockerfile
+      context: ./php81/docker 
+    #Imagem de origem
+    image: kelvinsev/webserver-php81:1.0
+    #Nome do container
+    container_name: webserver-php81
+    #Caminho da pasta local para armazenar os dados (./ seria o caminho atual do arquivo docker-compose)
+    volumes:
+      - ./php81:/var/www/html/php81
+    #Porta de Comunicacao Local > Container
+    ports:
+      - 8081:80
+    stdin_open: true  # docker run -i
+    tty: true         # docker run -t
